@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
     let textField = UITextField()
     let resultLabel = UILabel()
