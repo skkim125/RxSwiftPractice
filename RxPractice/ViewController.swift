@@ -28,7 +28,11 @@ class ViewController: UIViewController {
         //setRxButtonStepTwo()
         //setRxButtonStepThree()
         //setRxButtonStepFour()
-        setRxButtonStepFive()
+        //setRxButtonStepFive()
+        //setRxButtonStepSix()
+        //setRxButtonStepSeven()
+        //setRxButtonStepEight()
+        setRxButtonStepNine()
     }
     
     func configureHierarchy() {
@@ -111,7 +115,7 @@ class ViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    // 4) 약한 참조 코드 추가 축약.ver
+    // 4) 3).함축.ver
     func setRxButtonStepFour() {
         button.rx.tap
             .withUnretained(self)
@@ -131,6 +135,48 @@ class ViewController: UIViewController {
             }, onDisposed: { owner in
                 print("disposed")
             })
+            .disposed(by: disposeBag)
+    }
+    
+    // 6) 쓰레드 이슈 해결.ver
+    func setRxButtonStepSix() {
+        button.rx.tap
+            .subscribe(with: self, onNext: { owner, _ in
+                DispatchQueue.main.async {
+                    owner.resultLabel.text = owner.textField.text ?? "입력 없음"
+                }
+            }, onDisposed: { owner in
+                print("disposed")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    // 7) 6).함축.ver
+    func setRxButtonStepSeven() {
+        button.rx.tap
+            .observe(on: MainScheduler.instance)
+            .subscribe(with: self, onNext: { owner, _ in
+                owner.resultLabel.text = owner.textField.text ?? "입력 없음"
+            }, onDisposed: { owner in
+                print("disposed")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    // 8) 7)을 함축한 최종 코드
+    func setRxButtonStepEight() {
+        button.rx.tap
+            .bind(with: self, onNext: { owner, _ in
+                owner.resultLabel.text = owner.textField.text ?? "입력 없음"
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    // + bind(to:)로 직접 값을 전달하는 코드
+    func setRxButtonStepNine() {
+        button.rx.tap
+            .map { "버튼 터치됨" }
+            .bind(to: resultLabel.rx.text)
             .disposed(by: disposeBag)
     }
 }
