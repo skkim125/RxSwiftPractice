@@ -22,12 +22,19 @@ final class SimpleValidationViewController: UIViewController {
     
     private let loginButton = UIButton()
     
+    private var nicknameValid = false
+    private var passwordValid = false
+    private var loginIsEnabld = BehaviorSubject(value: false)
+    
+    private let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureHierarchy()
         configureLayout()
         configureView()
+        validAction()
     }
     
     func configureHierarchy() {
@@ -56,7 +63,7 @@ final class SimpleValidationViewController: UIViewController {
         }
         
         passwordLabel.snp.makeConstraints { make in
-            make.top.equalTo(nicknameValidationLabel.snp.bottom).offset(8)
+            make.top.equalTo(nicknameValidationLabel.snp.bottom).offset(15)
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(30)
         }
         
@@ -76,12 +83,13 @@ final class SimpleValidationViewController: UIViewController {
             make.height.equalTo(44)
         }
     }
-    
     func configureView() {
         view.backgroundColor = .white
         
         nicknameLabel.text = "Nickname"
+        nicknameLabel.font = .boldSystemFont(ofSize: 17)
         passwordLabel.text = "Password"
+        passwordLabel.font = .boldSystemFont(ofSize: 17)
         nicknameValidationLabel.text = "Nickname has to be at least \(5) characters"
         passwordValidationLabel.text = "Password has to be at least \(5) characters"
         
@@ -92,7 +100,76 @@ final class SimpleValidationViewController: UIViewController {
         passwordValidationLabel.textColor = .red
         
         loginButton.setTitle("Login", for: .normal)
-        loginButton.setTitleColor(.black, for: .normal)
         loginButton.backgroundColor = .green
+    }
+    
+    func validAction() {
+        
+        let nicknameValid = nicknameTextField.rx.text.orEmpty
+            .map({ $0.count >= 5 })
+        
+        let passwordValid = passwordTextField.rx.text.orEmpty
+            .map({ $0.count >= 5 })
+        
+        nicknameValid
+            .bind(to: nicknameValidationLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        passwordValid
+            .bind(to: passwordValidationLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        //        Observable.combineLatest(nicknameValid, passwordValid)
+        //            .map({ $0.0 && $0.1 })
+        //            .bind(with: self) { owner, isEnabled in
+        //                owner.loginButton.isEnabled = isEnabled
+        //                owner.loginButton.setTitleColor(isEnabled ? .black : .white , for: .normal)
+        //            }
+        //            .disposed(by: disposeBag)
+        
+        nicknameValid
+            .bind(with: self) { owner, isValid in
+                owner.nicknameValid = isValid
+                owner.checkAllValid()
+            }
+            .disposed(by: disposeBag)
+        
+        passwordValid
+            .bind(with: self) { owner, isValid in
+                owner.passwordValid = isValid
+                owner.checkAllValid()
+            }
+            .disposed(by: disposeBag)
+        
+        loginIsEnabld
+            .bind(with: self) { owner, isAllValid in
+                owner.loginButton.isEnabled = isAllValid
+                owner.loginButton.setTitleColor(isAllValid ? .black : .white , for: .normal)
+            }
+            .disposed(by: disposeBag)
+
+        
+        loginButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.showAlert()
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    func showAlert() {
+        let alert = UIAlertController(title: "로그인 성공", message: "로그인 되어있습니다.", preferredStyle: .alert)
+        
+        let ok = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(ok)
+        
+        present(alert, animated: true)
+    }
+    
+    func checkAllValid() {
+        if nicknameValid && passwordValid == true {
+            loginIsEnabld.onNext(true)
+        } else {
+            loginIsEnabld.onNext(false)
+        }
     }
 }
