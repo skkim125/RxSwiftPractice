@@ -20,12 +20,23 @@ final class AddingNumberViewController: UIViewController {
     
     private let resultLabel = UILabel()
     
+    // Observable
+    private var num1 = 0
+    private var num2 = 0
+    private var num3 = 0
+    
+    // Observer
+    private var resultNum = BehaviorSubject(value: 0)
+    
+    private let disposebag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureHierarchy()
         configureLayout()
         configureView()
+        addingNumberAction()
     }
     
     private func configureHierarchy() {
@@ -83,6 +94,9 @@ final class AddingNumberViewController: UIViewController {
             tf.textAlignment = .right
             tf.keyboardType = .numberPad
         }
+        firstTextField.text = "1"
+        secondTextField.text = "2"
+        thirdTextField.text = "3"
         
         divider.backgroundColor = .darkGray
         
@@ -94,5 +108,44 @@ final class AddingNumberViewController: UIViewController {
         resultLabel.font = .systemFont(ofSize: 17)
         resultLabel.textColor = .black
         resultLabel.textAlignment = .right
+    }
+    private func addingNumberAction() {
+//        Observable.combineLatest(firstTextField.rx.text.orEmpty, secondTextField.rx.text.orEmpty, thirdTextField.rx.text.orEmpty) {
+//            (Int($0) ?? 0) + (Int($1) ?? 0) + (Int($2) ?? 0)
+//        }
+//        .map { String($0) }
+//        .bind(to: resultLabel.rx.text)
+//        .disposed(by: disposebag)
+        
+        firstTextField.rx.text.orEmpty
+            .map({ Int($0) ?? -1 })
+            .bind(with: self) { owner, num1 in
+                owner.num1 = num1
+                owner.resultNum.onNext(owner.num1+owner.num2+owner.num3)
+            }
+            .disposed(by: disposebag)
+        
+        secondTextField.rx.text.orEmpty
+            .map({ Int($0) ?? -1 })
+            .bind(with: self) { owner, num2 in
+                owner.num2 = num2
+                owner.resultNum.onNext(owner.num1+owner.num2+owner.num3)
+            }
+            .disposed(by: disposebag)
+
+        thirdTextField.rx.text.orEmpty
+            .map({ Int($0) ?? -1 })
+            .bind(with: self) { owner, num3 in
+                owner.num3 = num3
+                owner.resultNum.onNext(owner.num1+owner.num2+owner.num3)
+            }
+            .disposed(by: disposebag)
+        
+        resultNum
+            .map({ String($0) })
+            .bind(with: self) { owner, result in
+                owner.resultLabel.text = "\(result)"
+            }
+            .disposed(by: disposebag)
     }
 }
