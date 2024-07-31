@@ -16,6 +16,7 @@
 		046200FE2C58D24E00D381C2 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 046200FD2C58D24E00D381C2 /* RxCocoa */; };
 		046201002C58D24E00D381C2 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 046200FF2C58D24E00D381C2 /* RxSwift */; };
 		046201042C5938A200D381C2 /* RxTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046201032C5938A200D381C2 /* RxTableViewController.swift */; };
+		046201062C5946AF00D381C2 /* OperatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046201052C5946AF00D381C2 /* OperatorViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		046200F12C58D1C600D381C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		046200F32C58D1C600D381C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		046201032C5938A200D381C2 /* RxTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxTableViewController.swift; sourceTree = "<group>"; };
+		046201052C5946AF00D381C2 /* OperatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperatorViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				046200E72C58D1C500D381C2 /* SceneDelegate.swift */,
 				046200E92C58D1C500D381C2 /* ViewController.swift */,
 				046201032C5938A200D381C2 /* RxTableViewController.swift */,
+				046201052C5946AF00D381C2 /* OperatorViewController.swift */,
 				046200EE2C58D1C600D381C2 /* Assets.xcassets */,
 				046200F02C58D1C600D381C2 /* LaunchScreen.storyboard */,
 				046200F32C58D1C600D381C2 /* Info.plist */,
@@ -152,6 +155,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				046201062C5946AF00D381C2 /* OperatorViewController.swift in Sources */,
 				046200EA2C58D1C500D381C2 /* ViewController.swift in Sources */,
 				046200E62C58D1C500D381C2 /* AppDelegate.swift in Sources */,
 				046200E82C58D1C500D381C2 /* SceneDelegate.swift in Sources */,
